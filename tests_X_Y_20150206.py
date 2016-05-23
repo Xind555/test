@@ -1,9 +1,8 @@
 #!/usr/local/bin/python3
+# -*- coding: utf-8 -*-
 
 
 import unittest
-import operator
-
 from code import Math
 
 
@@ -17,6 +16,7 @@ class MyTest(unittest.TestCase):
 		self.session = None
 
 	def test_foo(self):	
+		"""test_foo"""			
 		a = 1
 		self.assertEqual(a, 1)
 
@@ -27,7 +27,8 @@ class MyTest(unittest.TestCase):
 
 	def test_sum(self):  
 		"""Check is sum method is equivalent to operator"""
-		self.assertEqual(Math.sum(self, 1,1), 2)
+		x = Math.sum(self, 1,1)
+		self.assertEqual(x, 2)
 
 
 
