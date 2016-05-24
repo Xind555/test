@@ -1,7 +1,24 @@
 #!/usr/local/bin/python3
 # -*- coding: utf-8 -*-
 
-##nosetests -x --verbosity=3 --with-xunit --xunit-file=nosetests.xml --with-coverage --cover-package=tests --cover-tests --cover-xml
+#nosetests -x --verbosity=3 --with-xunit --xunit-file=nosetests.xml
+#nosetests -x --verbosity=3 --with-xunit --xunit-file=nosetests.xml --with-coverage
+#nosetests -x --verbosity=3 --with-xunit --xunit-file=nosetests.xml --with-coverage --cover-package=tests
+#nosetests -x --verbosity=3 --with-xunit --xunit-file=nosetests.xml --with-coverage --cover-tests --cover-xml
+#nosetests -x --verbosity=3 --with-xunit --xunit-file=nosetests.xml --with-coverage --cover-package=tests --cover-tests --cover-xml
+
+
+[nosetests]
+stop=TRUE
+verbosity=3
+with-xunit=TRUE
+xunit-file=nosetests.xml
+with-coverage=TRUE
+cover-tests=TRUE
+cover-inclusive=TRUE
+cover-package=tests
+cover-xml=TRUE
+cover-xml-file=coverage.xml
 
 import unittest
 from code import Math
