@@ -12,8 +12,6 @@
 import unittest
 from code import Math
 
-
-@classmethod
 class MyTest(unittest.TestCase):
 	"""bla"""
 	

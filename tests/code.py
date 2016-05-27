@@ -3,7 +3,7 @@
 
 """Math class"""
 
-@classmethod
+
 class Math():
 	
 	@staticmethod
