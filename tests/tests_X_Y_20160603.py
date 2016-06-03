@@ -13,7 +13,7 @@ import logging.config
 import zmq
 
 logfilename         = time.strftime("%Y%m%d_%Hh%Mm%S")+"_"+os.path.basename(__file__)+".log"
-logging.config.fileConfig(fname="../log.cfg", defaults={"logfilename": logfilename})
+logging.config.fileConfig(fname="./log.cfg", defaults={"logfilename": logfilename})
 logger              = logging.getLogger("sLogger")
 
 class MyTest(unittest.TestCase):
