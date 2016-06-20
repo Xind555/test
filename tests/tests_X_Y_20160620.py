@@ -16,63 +16,44 @@ Created on
 
 
 
-import time, os, sys, serial
+import time, os, sys, serial, threading
 import RPi.GPIO as GPIO
 import unittest
 import logging.config
 
 from code import Math
 
-
-logfilename = time.strftime("%Y%m%d_%Hh%Mm%S")+"_"+os.path.basename(__file__)+".log"
-logging.config.fileConfig(fname="log.cfg", defaults={"logfilename": logfilename})
-logger			= logging.getLogger("sLogger")
+logfilename         = time.strftime("%Y%m%d_%Hh%Mm%S")+"_"+os.path.basename(__file__)+".log"
+logging.config.fileConfig(fname=os.environ['PYTHONSRC_GIT']+"/log.cfg", defaults={"logfilename": logfilename})
+logger              = logging.getLogger("sLogger")
 
 # indirection via bytearray b/c bytes(range(256)) does something else in Pyhton 2.7
 bytes_0to255 = bytes(bytearray(range(256)))
 
 
-def segments(data, size=16):
+def segments(data, size=1):
 	for a in range(0, len(data), size):
 		yield data[a:a + size]
 
+
+
+
 class MyTest(unittest.TestCase):
 	"""Test with timeouts"""
-	timeout = 0
 	
 	def setUp(self):
-		self.session = 'foobar'
 		self.s = ser = serial.Serial()
 		self.s.baudrate = '9600'
 		self.s.port = '/dev/ttyAMA0'
+		self.s.timeout = 1
 		logger.info(self.s)
-		
 		self.s.open()
-		
-		ser.write(bytearray("L1\r", "ascii"))
-		exit(1)
+		logger.info(self.s)
+		#ser.write(bytearray("L1\r", "ascii"))
 	
 	def tearDown(self):
-		self.session = None
-		self.s.read_all()
 		self.s.close()
-	
-	def test_foo(self):
-		"""test_foo"""
-		var = 1
-		self.assertEqual(var, 1)
-		logger.info("OK")
-	
-	def test_bar(self):
-		"""test_bar"""		
-		var = 'data' + self.session
-		self.assertEqual(var, 'datafoobar')
-	
-	def test_sum(self):
-		"""Check is sum method is equivalent to operator"""
-		var = Math.sum(1,1)
-		self.assertEqual(var, 2)
-		
+
 	def test0_Messy(self):
 		"""NonBlocking (timeout=0)"""
 		# this is only here to write out the message in verbose mode
@@ -80,20 +61,20 @@ class MyTest(unittest.TestCase):
 
 	def test1_ReadEmpty(self):
 		"""timeout: After port open, the input buffer must be empty"""
-		self.assertEqual(self.s.read(10), b'', "expected empty buffer")
+		self.assertEqual(self.s.read(1).decode("utf-8"), '', "expected empty buffer")
 
 	def test2_Loopback(self):
 		"""timeout: each sent character should return (binary test).
 		   this is also a test for the binary capability of a port."""
-		for block in segments(bytes_0to255):
-			length = len(block)
-			self.s.write(block)
-			# there might be a small delay until the character is ready (especially on win32)
-			time.sleep(0.05)
-			self.assertEqual(self.s.in_waiting, length, "expected exactly %d character for inWainting()" % length)
-			self.assertEqual(self.s.read(length), block)  #, "expected a %r which was written before" % block)
-		self.assertEqual(self.s.read(1), b'', "expected empty buffer after all sent chars are read")
-		
+		for c in map(chr,range(256)):
+			logger.info(c.encode('utf-8'))
+			self.s.write(c.encode('utf-8'))
+			time.sleep(0.02)	#there might be a small delay until the character is ready (especialy on win32)
+			self.assertEqual(self.s.inWaiting(), 1, "expected exactly one character for inWainting()")
+			self.assertEqual(self.s.read(1).decode("utf-8"), c, "expected a {0} which was written before".format(c))
+		self.assertEqual(self.s.read(1).decode("utf-8"), '', "expected empty buffer after all sent chars are read")
+ 		
+
 
 if __name__ == "__main__":
 	unittest.main()

@@ -14,7 +14,6 @@ import zmq
 
 logfilename         = time.strftime("%Y%m%d_%Hh%Mm%S")+"_"+os.path.basename(__file__)+".log"
 logging.config.fileConfig(fname=os.environ['PYTHONSRC_GIT']+"/log.cfg", defaults={"logfilename": logfilename})
-#logging.config.fileConfig(fname="log.cfg", defaults={"logfilename": logfilename})
 logger              = logging.getLogger("sLogger")
 
 class MyTest(unittest.TestCase):
@@ -34,10 +33,10 @@ class MyTest(unittest.TestCase):
     def test_bar(self):
         """Do 10 requests, waiting each time for a response"""
         for request in range(5):
-            logger.info("Sending request %s …" % request)
+            logger.info("Sending request {0} …".format(request))
             self.socket.send(b"Hello")
             message = self.socket.recv()
-            logger.info("Received reply %s [ %s ]" % (request, message))
+            logger.info("Received reply {0} [ {1} ]".format(request, message))
             self.assertEqual(b"World", message)
 
 if __name__ == "__main__":
